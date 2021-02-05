@@ -1,0 +1,1210 @@
+[
+    {
+        "id": "fdc11c7.54315e",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "66c3d0f3.281e6",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "paramCheck",
+        "func": "var options = msg.payload;\nvar error = {topic: \"TCP Connect\"};\nvar configs = flow.get('connection01') || [];\n\noptions.connectorType = \"TCP\";\n\nif(!options.name || options.name === \"\"){\n    options.name = \"No name\";\n}\n\nif(!options.tcpPort)\n    options.tcpPort = 502;\n\nif(!options.tcpHost){\n    error.payload = \"TCP Host address not Valid\";\n    node.error(\"Errorsaf\",error);\n    return;\n}\n    \nflow.set('connection01', configs);\n\nnode.send([msg, {payload:configs, topic:\"init\"}]);",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 610,
+        "y": 200,
+        "wires": [
+            [],
+            [
+                "376115fd.cf8dca"
+            ]
+        ]
+    },
+    {
+        "id": "376115fd.cf8dca",
+        "type": "modbus-flex-connector",
+        "z": "fdc11c7.54315e",
+        "name": "modbusObject",
+        "maxReconnectsPerMinute": 4,
+        "emptyQueue": false,
+        "showStatusActivities": true,
+        "showErrors": true,
+        "server": "f70877c4.cc20e8",
+        "x": 820,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5c73c96e.b08418",
+        "type": "csv",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 750,
+        "y": 300,
+        "wires": [
+            [
+                "4405b627.aed498",
+                "df774bf9.dc8338",
+                "ca96cb92.a3a328"
+            ]
+        ]
+    },
+    {
+        "id": "923f7652.8cb9e8",
+        "type": "file in",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "filename": "D:\\Book1.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 570,
+        "y": 300,
+        "wires": [
+            [
+                "5c73c96e.b08418"
+            ]
+        ]
+    },
+    {
+        "id": "ca759fd.b161d6",
+        "type": "inject",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 300,
+        "wires": [
+            [
+                "923f7652.8cb9e8"
+            ]
+        ]
+    },
+    {
+        "id": "4405b627.aed498",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "setIpAddress",
+        "func": "var options = flow.get(\"connection01\") || {};\n\noptions.tcpHost = msg.payload.IpAddress;\n\nflow.set(\"connection01\", options);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 950,
+        "y": 300,
+        "wires": [
+            [
+                "214bb08e.9baf2"
+            ]
+        ]
+    },
+    {
+        "id": "ca96cb92.a3a328",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "setPortNumber",
+        "func": "var options = flow.get(\"connection01\") || {};\n\noptions.tcpPort = msg.payload.PortNumber;\n\nflow.set(\"connection01\", options);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 960,
+        "y": 340,
+        "wires": [
+            [
+                "214bb08e.9baf2"
+            ]
+        ]
+    },
+    {
+        "id": "df774bf9.dc8338",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "setUnitId",
+        "func": "var options = flow.get(\"connection01\") || {};\n\noptions.unitId = msg.payload.UnitID;\n\nflow.set(\"connection01\", options);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 940,
+        "y": 380,
+        "wires": [
+            [
+                "214bb08e.9baf2"
+            ]
+        ]
+    },
+    {
+        "id": "87a63e45.c8a51",
+        "type": "inject",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "connection01",
+        "payloadType": "flow",
+        "x": 410,
+        "y": 200,
+        "wires": [
+            [
+                "66c3d0f3.281e6"
+            ]
+        ]
+    },
+    {
+        "id": "e2526d11.fce4d",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 560,
+        "wires": [
+            [
+                "e3fe17d.e308be8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "6665673b.a3c2f8",
+        "type": "csv",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "ed144e33.fa52e"
+            ]
+        ]
+    },
+    {
+        "id": "d4e8b5a9.81d5f8",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress , \n    'quantity': 1\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 560,
+        "wires": [
+            [
+                "e2526d11.fce4d"
+            ]
+        ]
+    },
+    {
+        "id": "fee5eaa4.115048",
+        "type": "inject",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "0.5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 420,
+        "wires": [
+            [
+                "cdf24352.4034e"
+            ]
+        ]
+    },
+    {
+        "id": "cdf24352.4034e",
+        "type": "file in",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "filename": "D:\\Book1.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 90,
+        "y": 520,
+        "wires": [
+            [
+                "6665673b.a3c2f8"
+            ]
+        ]
+    },
+    {
+        "id": "ed144e33.fa52e",
+        "type": "change",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload.TagNames",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 150,
+        "y": 640,
+        "wires": [
+            [
+                "fd511bb6.6904b8"
+            ]
+        ]
+    },
+    {
+        "id": "22788296.abf9fe",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'tagNames': msg.topic, \n    'Values': msg.payload[0],\n    'Timestamp' : new Date()\n}\n//msg.topic = msg.topic;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1200,
+        "y": 540,
+        "wires": [
+            [
+                "b3b569b8.b77d28",
+                "2b90442e.1a8d4c"
+            ]
+        ]
+    },
+    {
+        "id": "b3b569b8.b77d28",
+        "type": "mqtt out",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "topic": "ifmelectronics",
+        "qos": "2",
+        "retain": "true",
+        "broker": "b779b376.7d177",
+        "x": 1380,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "e3fe17d.e308be8",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toWord",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "int16be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1000,
+        "y": 560,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "cf2d0dfa.a5044",
+        "type": "switch",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "property": "payload.DataTypes",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "word",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "float",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "long",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "dword",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "double",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "short",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "bool",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 7,
+        "x": 430,
+        "y": 640,
+        "wires": [
+            [
+                "d4e8b5a9.81d5f8"
+            ],
+            [
+                "a07b1ecd.f6057"
+            ],
+            [
+                "b23e5d56.2b762"
+            ],
+            [
+                "1b123e26.800d92"
+            ],
+            [
+                "827e649b.192fe8"
+            ],
+            [
+                "84ae89c2.4e28c8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "2b90442e.1a8d4c",
+        "type": "debug",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "a07b1ecd.f6057",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress , \n    'quantity': 2\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 600,
+        "wires": [
+            [
+                "3385fa8d.ac9f06"
+            ]
+        ]
+    },
+    {
+        "id": "b5b473e9.ddfe5",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toFloatBE",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "floatbe",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1000,
+        "y": 620,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "3385fa8d.ac9f06",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 620,
+        "wires": [
+            [
+                "b5b473e9.ddfe5"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "38f7321c.7f04ce",
+        "type": "link in",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "links": [
+            "214bb08e.9baf2"
+        ],
+        "x": 475,
+        "y": 140,
+        "wires": [
+            [
+                "66c3d0f3.281e6"
+            ]
+        ]
+    },
+    {
+        "id": "214bb08e.9baf2",
+        "type": "link out",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "links": [
+            "38f7321c.7f04ce"
+        ],
+        "x": 1095,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "ced4d3b3.20cde",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toLong",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "int32be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 990,
+        "y": 680,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "e41c48e8.00c9b8",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toDWord",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "uint32be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1000,
+        "y": 740,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "aa67bfd.233544",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toDoubleBE",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "doublebe",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1010,
+        "y": 800,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "bbe1e85b.6378d8",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 680,
+        "wires": [
+            [
+                "ced4d3b3.20cde"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "b23e5d56.2b762",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress , \n    'quantity': 2\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 640,
+        "wires": [
+            [
+                "bbe1e85b.6378d8"
+            ]
+        ]
+    },
+    {
+        "id": "1b123e26.800d92",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress , \n    'quantity': 2\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 680,
+        "wires": [
+            [
+                "7e4f9daf.4904f4"
+            ]
+        ]
+    },
+    {
+        "id": "7e4f9daf.4904f4",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 740,
+        "wires": [
+            [
+                "e41c48e8.00c9b8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "b17c49a8.9234d8",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 800,
+        "wires": [
+            [
+                "aa67bfd.233544"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "827e649b.192fe8",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress , \n    'quantity': 4\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 720,
+        "wires": [
+            [
+                "b17c49a8.9234d8"
+            ]
+        ]
+    },
+    {
+        "id": "fd511bb6.6904b8",
+        "type": "switch",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "property": "payload.FunctionCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 4,
+        "x": 310,
+        "y": 520,
+        "wires": [
+            [
+                "250ce079.aa9b"
+            ],
+            [
+                "250ce079.aa9b"
+            ],
+            [
+                "cf2d0dfa.a5044"
+            ],
+            [
+                "cf2d0dfa.a5044"
+            ]
+        ]
+    },
+    {
+        "id": "250ce079.aa9b",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress, \n    'quantity': 1\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 500,
+        "wires": [
+            [
+                "fc780b7b.630f48"
+            ]
+        ]
+    },
+    {
+        "id": "fc780b7b.630f48",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 500,
+        "wires": [
+            [
+                "5b137705.74cd88"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5b137705.74cd88",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toBinary",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "bool",
+                "name": "item1",
+                "offset": 1,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1000,
+        "y": 500,
+        "wires": [
+            [
+                "22788296.abf9fe",
+                "10232f1.06769d1"
+            ]
+        ]
+    },
+    {
+        "id": "f3bdc6df.c8ff08",
+        "type": "modbus-flex-getter",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "logIOActivities": false,
+        "server": "f70877c4.cc20e8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": true,
+        "x": 810,
+        "y": 860,
+        "wires": [
+            [
+                "97fa16b8.655ee8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "97fa16b8.655ee8",
+        "type": "buffer-parser",
+        "z": "fdc11c7.54315e",
+        "name": "toShort",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "int16be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1000,
+        "y": 860,
+        "wires": [
+            [
+                "22788296.abf9fe"
+            ]
+        ]
+    },
+    {
+        "id": "84ae89c2.4e28c8",
+        "type": "function",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "func": "msg.payload = { \n    'fc': msg.payload.FunctionCode, \n    'unitid': msg.payload.UnitID, \n    'address': msg.payload.TagAddress, \n    'quantity': 2\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 600,
+        "y": 760,
+        "wires": [
+            [
+                "f3bdc6df.c8ff08"
+            ]
+        ]
+    },
+    {
+        "id": "10232f1.06769d1",
+        "type": "debug",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1213.45703125,
+        "y": 437.1875,
+        "wires": []
+    },
+    {
+        "id": "35d09e27.e00452",
+        "type": "inject",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "0.5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1240,
+        "y": 760,
+        "wires": [
+            [
+                "7c9df0d0.01adc"
+            ]
+        ]
+    },
+    {
+        "id": "7c9df0d0.01adc",
+        "type": "debug",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1390,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "12b1d13f.6c0bbf",
+        "type": "catch",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "scope": [
+            "e2526d11.fce4d"
+        ],
+        "uncaught": false,
+        "x": 1190,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "70df5085.fe335",
+        "type": "mqtt in",
+        "z": "fdc11c7.54315e",
+        "name": "",
+        "topic": "ackserver",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "b779b376.7d177",
+        "x": 1540,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f70877c4.cc20e8",
+        "type": "modbus-client",
+        "name": "PARAM_01",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "tcpHost": "127.0.0.1",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true
+    },
+    {
+        "id": "b779b376.7d177",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
