@@ -7,5 +7,6 @@
 - [TODO] data endianess setting via csv file.
 - [TODO] mqtt parameter setting via csv file.
 - [TODO] multiple modbus device support.
+- [TODO] multiple modbus tag list support.
 - [TODO] mqtt parameter setting via csv file.
   
