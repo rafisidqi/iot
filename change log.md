@@ -1,4 +1,4 @@
-0.1
+##V0.1
 - [DONE] modbus implementation, supported function code 1,2,3 and 4.
 - [DONE] modbus parameter setting via csv file.
 - [DONE] modbus tag list setting via csv.
